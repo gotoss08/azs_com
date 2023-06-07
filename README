@@ -1,0 +1,84 @@
+RS232 COM port native driver for 1C
+
+This is RS232 communication port native driver for 1C:Enterprise 8.x.
+This driver provides communication from 1C:Enterprise 8.x to lots of devices that use 
+RS232 communication port, such as: modems, thermal printers, bar code scanners and special controllers.
+
+```
+Includes RAW DATA additional code changes
+```
+
+Methods:
+
+int Open(int nPort, int Baud, int nBit, int Parity, int StopBit) - open port, return 0 if success;
+	nPort - 1..;
+	Baud - 300, 600, 1200, 9600, 14400, 19200, 57600, 115200;
+	nBit - 7,8;
+	Parity - 0: None, 1: Odd, 2: Even, 3:Mark, 4:Space;
+	StopBit - 0: 1.0, 1: 1.5; 2: 2.0.
+	Close()       - close port;
+int Send(wstr data) - send data;
+int Receive() - receive data from port - return number of received chars; 
+Delay(int dt) - delay dt milliseconds.
+
+Properties:
+
+bool IsOpen  - is port opened or no;
+int Port     - port number;
+int Baud     - port speed;
+int ByteSize - number of bits;
+int Parity   - port parity;
+int StopBit  - 1, 1,5 2 stop bit;
+wstr Command - last command to port;
+wstr Answer  - answer from port;
+int Error    - last error code
+
+VTA:
+GetWeightVTA() - get weight
+SetPriceVTA(Price) - set price
+
+Maria:
+InitMaria() - Init rinter
+SendMaria(cmd) - Send command "cmd"
+    examples:
+	REZ = COMP.SendMaria("NREP"); //ZReport();
+	REZ = COMP.SendMaria("ZREP"); //XReport();
+	REZ = COMP.SendMaria("DBEG1"); //OpenDoc(Ложь);
+	REZ = COMP.SendMaria("TEXT0001234567890 a1234567890 a1234567890 b1234567890"); 
+	REZ = COMP.SendMaria("CTXT"); //ClearComment();
+	REZ = COMP.SendMaria("PRTX"); //PrintDoc();
+	REZ = COMP.SendMaria("NULL"); //НулевойЧек();
+	REZ = COMP.SendMaria("KASS"); //OpenDrawer();
+	REZ = COMP.SendMaria("DISp23      2900"); //Display("      2900");
+	REZ = COMP.SendMaria("GETD");
+	REZ = COMP.SendMaria("MDMD260100");
+
+
+ACS:
+StartPollACS() - start threed for getweight 
+GetWeightACS() - get weight
+
+LED8N:
+SendHex("1B5141313233340D") - send 1234 to display
+SendHex("1B7331") - Turn on first led
+
+IKS:
+SendIKS(cmd, data) - send command to IKS
+    examples:
+        REZ = COMP.SendIKS(15,"") - Cancell check
+        REZ = COMP.SendIKS(20,"03000001000430303030") - Close check 03 - sell type, 00000100 - sum, 30303030 - avtorization code  
+        REZ = COMP.SendIKS(42, "00") - Z report
+
+1C: Examples:
+
+InfoBase - modem demo;
+InfoBaseMaria - Maria 301-307 fiscal printer demo.
+InfoBaseIKS - IKS fiscal printer demo.
+ibAClas - AClas weight demo
+ibACS30A - ACS30A weight demo
+ibVTA - VTA weight demo
+ibLED8N - LED8N display demo
+
+
+
+
